@@ -13,7 +13,7 @@
 
 
 
- **Типовые запросы**
+ **ТИПОВЫЕ ЗАПРОСЫ**
 > 1. Запрос на получение всех доступных рекламных площадок
 ```sql
 SELECT * FROM AdSpaces WHERE Status = 'available';
@@ -35,7 +35,7 @@ INSERT INTO Reviews (AdSpaceID, SellerID, Rating, Comment, CreateDate) VALUES (1
 SELECT SellerID, COUNT(*) as TotalSales FROM Orders GROUP BY SellerID;
 ```
 
-**Хранимые процедуры**
+**ХРАНИМЫЕ ПРОЦЕДУРЫ**
 Процедура для обработки платежей, включает проверку баланса покупателя:
 
 ```sql
