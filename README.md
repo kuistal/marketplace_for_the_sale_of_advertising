@@ -36,6 +36,7 @@ SELECT SellerID, COUNT(*) as TotalSales FROM Orders GROUP BY SellerID;
 ```
 
 **ХРАНИМЫЕ ПРОЦЕДУРЫ**
+
 Процедура для обработки платежей, включает проверку баланса покупателя:
 
 ```sql
