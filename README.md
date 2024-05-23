@@ -12,6 +12,7 @@
 - [x] минимум один обработчик исключений
 > [!NOTE]
 > Спасибо Жукову Кириллу
+
 > **Типовые запросы**
 > 1. Запрос на получение всех доступных рекламных площадок
 ```sql
@@ -32,4 +33,40 @@ INSERT INTO Reviews (AdSpaceID, SellerID, Rating, Comment, CreateDate) VALUES (1
 5. Запрос на подсчёт общего количества продаж по каждому продавцу
 ```sql
 SELECT SellerID, COUNT(*) as TotalSales FROM Orders GROUP BY SellerID;
+```
+
+**Хранимые процедуры**
+Процедура для обработки платежей, включает проверку баланса покупателя:
+
+```sql
+CREATE PROCEDURE ProcessPayment(IN orderID INT)
+BEGIN
+    DECLARE orderAmount DECIMAL(10,2);
+    DECLARE buyerBalance DECIMAL(10,2);
+    DECLARE buyerID INT;
+```
+Получение суммы заказа
+```sql
+   
+    SET orderAmount = GetOrderAmount(orderID);
+    SELECT BuyerID, Balance INTO buyerID, buyerBalance FROM Orders JOIN Users ON Orders.BuyerID = Users.UserID WHERE OrderID = orderID;
+```
+Проверка достаточности средств
+ ```sql
+   
+    IF buyerBalance >= orderAmount THEN
+        -- Обновление статуса заказа и списание средств
+        START TRANSACTION;
+            UPDATE Users SET Balance = Balance - orderAmount WHERE UserID = buyerID;
+            UPDATE Orders SET Status = 'completed' WHERE OrderID = orderID;
+            INSERT INTO Transactions (OrderID, TransactionDate, Amount, Type) VALUES (orderID, NOW(), orderAmount, 'debit');
+        COMMIT;
+    ELSE
+```
+Обработка исключения при недостатке средств
+
+```sql
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient funds';
+  END IF;
+END;
 ```
