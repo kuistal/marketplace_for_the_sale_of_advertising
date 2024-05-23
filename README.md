@@ -14,30 +14,30 @@
 
 
  ## ТИПОВЫЕ ЗАПРОСЫ
- 1. Запрос на получение всех доступных рекламных площадок
+**1. Запрос на получение всех доступных рекламных площадок**
 ```sql
 SELECT * FROM AdSpaces WHERE Status = 'available';
 ```
-2. Запрос на создание нового заказа
+**2. Запрос на создание нового заказа**
 ```sql
 INSERT INTO Orders (BuyerID, AdSpaceID, OrderDate, Amount, Status) VALUES (5, 19, NOW(), 80.00, 'pending');
 ```
-3. Запрос на обновление статуса заказа после оплаты
+**3. Запрос на обновление статуса заказа после оплаты**
 ```sql
 UPDATE Orders SET Status = 'completed' WHERE OrderID = 1 AND BuyerID = 9;
 ```
-4. Запрос на добавление отзыва о рекламной площадке
+**4. Запрос на добавление отзыва о рекламной площадке**
 ```sql
 INSERT INTO Reviews (AdSpaceID, SellerID, Rating, Comment, CreateDate) VALUES (16, 5, 4, 'Very engaging ad format.', NOW());
 ```
-5. Запрос на подсчёт общего количества продаж по каждому продавцу
+**5. Запрос на подсчёт общего количества продаж по каждому продавцу**
 ```sql
 SELECT SellerID, COUNT(*) as TotalSales FROM Orders GROUP BY SellerID;
 ```
 
-**ХРАНИМЫЕ ПРОЦЕДУРЫ**
+## ХРАНИМЫЕ ПРОЦЕДУРЫ
 
-Процедура для обработки платежей, включает проверку баланса покупателя:
+**Процедура для обработки платежей, включает проверку баланса покупателя:**
 
 ```sql
 CREATE PROCEDURE ProcessPayment(IN orderID INT)
@@ -46,13 +46,13 @@ BEGIN
     DECLARE buyerBalance DECIMAL(10,2);
     DECLARE buyerID INT;
 ```
-Получение суммы заказа
+**Получение суммы заказа**
 ```sql
    
     SET orderAmount = GetOrderAmount(orderID);
     SELECT BuyerID, Balance INTO buyerID, buyerBalance FROM Orders JOIN Users ON Orders.BuyerID = Users.UserID WHERE OrderID = orderID;
 ```
-Проверка достаточности средств
+**Проверка достаточности средств**
  ```sql
    
     IF buyerBalance >= orderAmount THEN
@@ -64,7 +64,7 @@ BEGIN
         COMMIT;
     ELSE
 ```
-Обработка исключения при недостатке средств
+**Обработка исключения при недостатке средств**
 
 ```sql
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient funds';
@@ -73,9 +73,9 @@ END;
 ```
 
 
-**ТРИГЕР**
+## ТРИГЕР
 
-Триггер, который автоматически добавляет запись в лог после изменения статуса заказа:
+**Триггер, который автоматически добавляет запись в лог после изменения статуса заказа:**
 ```sql
 CREATE TRIGGER LogOrderUpdate AFTER UPDATE ON Orders
 FOR EACH ROW
@@ -86,9 +86,9 @@ BEGIN
 END;
 ```
 
-**ПОЛЬЗОВАТЕЛЬСКАЯ ФУНКЦИЯ**
+## ПОЛЬЗОВАТЕЛЬСКАЯ ФУНКЦИЯ
 
-Функция для получения суммы заказа по ID заказа:
+**Функция для получения суммы заказа по ID заказа:**
 
 ```sql
 CREATE FUNCTION GetOrderAmount(orderID INT) RETURNS DECIMAL(10,2)
@@ -100,9 +100,9 @@ BEGIN
 END;
 ```
 
-**ПРЕДСТАВЛЕНИЕ**
+## ПРЕДСТАВЛЕНИЕ
 
-Представление, показывающее все завершенные заказы:
+**Представление, показывающее все завершенные заказы:**
 
 ```sql
 CREATE VIEW CompletedOrders AS
