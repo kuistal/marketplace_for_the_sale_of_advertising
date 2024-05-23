@@ -71,3 +71,39 @@ BEGIN
   END IF;
 END;
 ```
+
+
+**ТРИГЕР**
+Триггер, который автоматически добавляет запись в лог после изменения статуса заказа:
+```sql
+CREATE TRIGGER LogOrderUpdate AFTER UPDATE ON Orders
+FOR EACH ROW
+BEGIN
+    IF OLD.Status <> NEW.Status THEN
+        INSERT INTO OrderStatusLog (OrderID, OldStatus, NewStatus, ChangeDate) VALUES (NEW.OrderID, OLD.Status, NEW.Status, NOW());
+    END IF;
+END;
+```
+
+**ПОЛЬЗОВАТЕЛЬСКАЯ ФУНКЦИЯ**
+Функция для получения суммы заказа по ID заказа:
+
+```sql
+CREATE FUNCTION GetOrderAmount(orderID INT) RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE amount DECIMAL(10,2);
+    SELECT Amount INTO amount FROM Orders WHERE OrderID = orderID;
+    RETURN amount;
+END;
+```
+
+**ПРЕДСТАВЛЕНИЕ**
+Представление, показывающее все завершенные заказы:
+
+```sql
+CREATE VIEW CompletedOrders AS
+SELECT OrderID, BuyerID, Amount
+FROM Orders
+WHERE Status = 'completed';
+```
