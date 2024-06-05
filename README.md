@@ -105,7 +105,6 @@ CREATE ROLE IF NOT EXISTS user;
 
 GRANT ALL PRIVILEGES ON *.* TO admin;
 
--- Присвоение прав роли moderator
 GRANT SELECT, INSERT, UPDATE, DELETE ON AdSpaces TO moderator;
 GRANT SELECT, INSERT, UPDATE, DELETE ON Reviews TO moderator;
 
