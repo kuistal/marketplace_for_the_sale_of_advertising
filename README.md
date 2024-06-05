@@ -18,95 +18,99 @@
 ```sql
 SELECT * FROM AdSpaces WHERE Status = 'available';
 ```
-**2. Запрос на создание нового заказа**
+**2. Получение всех заказов пользователя по UserID**
 ```sql
-INSERT INTO Orders (BuyerID, AdSpaceID, OrderDate, Amount, Status) VALUES (5, 19, NOW(), 80.00, 'pending');
+SELECT * FROM Orders WHERE UserID = 1;
 ```
-**3. Запрос на обновление статуса заказа после оплаты**
+**3. Получение всех отзывов для конкретной рекламной площадки**
 ```sql
-UPDATE Orders SET Status = 'completed' WHERE OrderID = 1 AND BuyerID = 9;
+SELECT * FROM Reviews WHERE AdSpaceID = 1;
 ```
-**4. Запрос на добавление отзыва о рекламной площадке**
+**4. Получение всех транзакций по OrderID**
 ```sql
-INSERT INTO Reviews (AdSpaceID, SellerID, Rating, Comment, CreateDate) VALUES (16, 5, 4, 'Very engaging ad format.', NOW());
+SELECT * FROM Transactions WHERE OrderID = 1;
 ```
-**5. Запрос на подсчёт общего количества продаж по каждому продавцу**
+**Запрос 5: Получение средней оценки для рекламной площадки**
 ```sql
-SELECT SellerID, COUNT(*) as TotalSales FROM Orders GROUP BY SellerID;
+SELECT AdSpaceID, AVG(Rating) as AverageRating 
+FROM Reviews 
+WHERE AdSpaceID = 1 -- Замените 1 на нужный AdSpaceID
+GROUP BY AdSpaceID;
 ```
 
-## ХРАНИМЫЕ ПРОЦЕДУРЫ
+## Транзакция
 
 **Процедура для обработки платежей, включает проверку баланса покупателя:**
 
 ```sql
-CREATE PROCEDURE ProcessPayment(IN orderID INT)
-BEGIN
-    DECLARE orderAmount DECIMAL(10,2);
-    DECLARE buyerBalance DECIMAL(10,2);
-    DECLARE buyerID INT;
-```
-**Получение суммы заказа**
-```sql
-   
-    SET orderAmount = GetOrderAmount(orderID);
-    SELECT BuyerID, Balance INTO buyerID, buyerBalance FROM Orders JOIN Users ON Orders.BuyerID = Users.UserID WHERE OrderID = orderID;
-```
-**Проверка достаточности средств**
- ```sql
-   
-    IF buyerBalance >= orderAmount THEN
-        -- Обновление статуса заказа и списание средств
-        START TRANSACTION;
-            UPDATE Users SET Balance = Balance - orderAmount WHERE UserID = buyerID;
-            UPDATE Orders SET Status = 'completed' WHERE OrderID = orderID;
-            INSERT INTO Transactions (OrderID, TransactionDate, Amount, Type) VALUES (orderID, NOW(), orderAmount, 'debit');
-        COMMIT;
-    ELSE
-```
-**Обработка исключения при недостатке средств**
+START TRANSACTION;
 
-```sql
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient funds';
-  END IF;
-END;
-```
+-- Создание заказа
+INSERT INTO Orders (UserID, AdSpaceID, OrderDate, Amount, Status) 
+VALUES (1, 1, NOW(), 50.00, 'pending');
 
+-- Получение ID созданного заказа
+SET @OrderID = LAST_INSERT_ID();
+
+-- Создание транзакции
+INSERT INTO Transactions (OrderID, TransactionDate, Amount, Type) 
+VALUES (@OrderID, NOW(), 50.00, 'debit');
+
+COMMIT;
+```
 
 ## ТРИГЕР
 
-**Триггер, который автоматически добавляет запись в лог после изменения статуса заказа:**
+**Триггер, автоматического обновления статуса рекламной площадки после создания заказа:**
 ```sql
-CREATE TRIGGER LogOrderUpdate AFTER UPDATE ON Orders
+CREATE TRIGGER UpdateAdSpaceStatusAfterOrder
+AFTER INSERT ON Orders
 FOR EACH ROW
 BEGIN
-    IF OLD.Status <> NEW.Status THEN
-        INSERT INTO OrderStatusLog (OrderID, OldStatus, NewStatus, ChangeDate) VALUES (NEW.OrderID, OLD.Status, NEW.Status, NOW());
-    END IF;
-END;
+    UPDATE AdSpaces
+    SET Status = 'unavailable'
+    WHERE AdSpaceID = NEW.AdSpaceID;
+END 
 ```
 
 ## ПОЛЬЗОВАТЕЛЬСКАЯ ФУНКЦИЯ
 
-**Функция для получения суммы заказа по ID заказа:**
+**Функция длядля получения средней оценки рекламной площадки:**
 
 ```sql
-CREATE FUNCTION GetOrderAmount(orderID INT) RETURNS DECIMAL(10,2)
+
+CREATE FUNCTION GetAverageRating(p_AdSpaceID INT) 
+RETURNS DECIMAL(3,2)
 DETERMINISTIC
 BEGIN
-    DECLARE amount DECIMAL(10,2);
-    SELECT Amount INTO amount FROM Orders WHERE OrderID = orderID;
-    RETURN amount;
-END;
+    DECLARE v_AvgRating DECIMAL(3,2);
+
+    SELECT AVG(Rating) INTO v_AvgRating
+    FROM Reviews
+    WHERE AdSpaceID = p_AdSpaceID;
+
+    RETURN v_AvgRating;
+END 
 ```
 
-## ПРЕДСТАВЛЕНИЕ
+## РОЛИ
 
-**Представление, показывающее все завершенные заказы:**
+**Все доступные ролли admin,moderator,user **
 
 ```sql
-CREATE VIEW CompletedOrders AS
-SELECT OrderID, BuyerID, Amount
-FROM Orders
-WHERE Status = 'completed';
+CREATE ROLE IF NOT EXISTS admin;
+CREATE ROLE IF NOT EXISTS moderator;
+CREATE ROLE IF NOT EXISTS user;
+
+
+GRANT ALL PRIVILEGES ON *.* TO admin;
+
+-- Присвоение прав роли moderator
+GRANT SELECT, INSERT, UPDATE, DELETE ON AdSpaces TO moderator;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Reviews TO moderator;
+
+
+GRANT SELECT ON AdSpaces TO user;
+GRANT INSERT ON Orders TO user;
+GRANT INSERT ON Reviews TO user;
 ```
