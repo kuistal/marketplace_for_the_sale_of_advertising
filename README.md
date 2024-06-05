@@ -45,14 +45,11 @@ GROUP BY AdSpaceID;
 ```sql
 START TRANSACTION;
 
--- Создание заказа
 INSERT INTO Orders (UserID, AdSpaceID, OrderDate, Amount, Status) 
 VALUES (1, 1, NOW(), 50.00, 'pending');
 
--- Получение ID созданного заказа
 SET @OrderID = LAST_INSERT_ID();
 
--- Создание транзакции
 INSERT INTO Transactions (OrderID, TransactionDate, Amount, Type) 
 VALUES (@OrderID, NOW(), 50.00, 'debit');
 
