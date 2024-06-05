@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: marketplace_for_the_sale_of_advertising
+-- Host: localhost    Database: marketplace_for_the_sale_of_advertising_v2
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,32 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `transactions`
+-- Table structure for table `reviews`
 --
 
-DROP TABLE IF EXISTS `transactions`;
+DROP TABLE IF EXISTS `reviews`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transactions` (
-  `TransactionID` int NOT NULL AUTO_INCREMENT,
-  `OrderID` int NOT NULL,
-  `TransactionDate` datetime NOT NULL,
-  `Amount` decimal(10,2) NOT NULL,
-  `Type` enum('debit','credit') NOT NULL,
-  PRIMARY KEY (`TransactionID`),
-  KEY `OrderID` (`OrderID`),
-  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `reviews` (
+  `ReviewID` int NOT NULL AUTO_INCREMENT,
+  `AdSpaceID` int DEFAULT NULL,
+  `AuthorID` int DEFAULT NULL,
+  `Rating` int DEFAULT NULL,
+  `Comment` text,
+  `CreateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ReviewID`),
+  KEY `AdSpaceID` (`AdSpaceID`),
+  KEY `AuthorID` (`AuthorID`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`AdSpaceID`) REFERENCES `adspaces` (`AdSpaceID`),
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`AuthorID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `reviews_chk_1` CHECK (((`Rating` >= 1) and (`Rating` <= 5)))
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `transactions`
+-- Dumping data for table `reviews`
 --
 
-LOCK TABLES `transactions` WRITE;
-/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES (1,1,'2024-05-23 11:33:27',250.00,'debit'),(2,2,'2024-05-23 11:33:27',200.00,'debit'),(3,3,'2024-05-23 11:33:27',90.00,'debit'),(4,4,'2024-05-23 11:33:27',80.00,'debit');
-/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (1,1,1,5,'Great ad space!','2024-06-05 17:09:56'),(2,2,2,4,'Good ad space','2024-06-05 17:09:56'),(3,1,4,4,'Nice ad space!','2024-06-05 19:01:38'),(4,3,1,5,'Excellent ad space!','2024-06-05 19:01:38'),(5,3,2,2,'Not satisfied','2024-06-05 19:01:38');
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-23 13:08:21
+-- Dump completed on 2024-06-05 19:55:50

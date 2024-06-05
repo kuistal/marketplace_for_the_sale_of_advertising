@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: marketplace_for_the_sale_of_advertising
+-- Host: localhost    Database: marketplace_for_the_sale_of_advertising_v2
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,35 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `reviews`
+-- Table structure for table `adspaces`
 --
 
-DROP TABLE IF EXISTS `reviews`;
+DROP TABLE IF EXISTS `adspaces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `reviews` (
-  `ReviewID` int NOT NULL AUTO_INCREMENT,
-  `AdSpaceID` int NOT NULL,
+CREATE TABLE `adspaces` (
+  `AdSpaceID` int NOT NULL AUTO_INCREMENT,
   `SellerID` int DEFAULT NULL,
-  `Rating` int NOT NULL,
-  `Comment` text,
-  `CreateDate` datetime NOT NULL,
-  PRIMARY KEY (`ReviewID`),
-  KEY `AdSpaceID` (`AdSpaceID`),
-  KEY `AuthorID` (`SellerID`),
-  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`AdSpaceID`) REFERENCES `adspaces` (`AdSpaceID`),
-  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`SellerID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Title` varchar(255) NOT NULL,
+  `Description` text,
+  `Price` decimal(10,2) NOT NULL,
+  `Status` enum('available','unavailable') NOT NULL,
+  PRIMARY KEY (`AdSpaceID`),
+  KEY `SellerID` (`SellerID`),
+  CONSTRAINT `adspaces_ibfk_1` FOREIGN KEY (`SellerID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `reviews`
+-- Dumping data for table `adspaces`
 --
 
-LOCK TABLES `reviews` WRITE;
-/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
-INSERT INTO `reviews` VALUES (5,16,5,4,'Very engaging ad format.','2024-05-23 11:46:53'),(6,17,6,5,'Excellent placement for maximum visibility.','2024-05-23 11:46:53'),(7,18,7,3,'Good price but low engagement.','2024-05-23 11:46:53'),(8,19,8,5,'Great return on investment.','2024-05-23 11:46:53');
-/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
+LOCK TABLES `adspaces` WRITE;
+/*!40000 ALTER TABLE `adspaces` DISABLE KEYS */;
+INSERT INTO `adspaces` VALUES (1,3,'Ad Space 1','Description for Ad Space 1',50.00,'available'),(2,3,'Ad Space 2','Description for Ad Space 2',75.00,'unavailable'),(3,6,'Ad Space 3','Description for Ad Space 3',60.00,'available'),(4,6,'Ad Space 4','Description for Ad Space 4',85.00,'unavailable'),(5,6,'adSpace','baner',20.00,'available');
+/*!40000 ALTER TABLE `adspaces` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-23 13:08:21
+-- Dump completed on 2024-06-05 19:55:50

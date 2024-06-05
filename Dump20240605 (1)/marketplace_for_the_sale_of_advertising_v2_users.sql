@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: marketplace_for_the_sale_of_advertising
+-- Host: localhost    Database: marketplace_for_the_sale_of_advertising_v2
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,35 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `orders`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `orders` (
-  `OrderID` int NOT NULL AUTO_INCREMENT,
-  `BuyerID` int NOT NULL,
-  `AdSpaceID` int NOT NULL,
-  `OrderDate` datetime NOT NULL,
-  `Amount` decimal(10,2) NOT NULL,
-  `Status` enum('pending','completed','cancelled') NOT NULL,
-  PRIMARY KEY (`OrderID`),
-  KEY `BuyerID` (`BuyerID`),
-  KEY `AdSpaceID` (`AdSpaceID`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`BuyerID`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`AdSpaceID`) REFERENCES `adspaces` (`AdSpaceID`)
+CREATE TABLE `users` (
+  `UserID` int NOT NULL AUTO_INCREMENT,
+  `Username` varchar(255) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `PasswordHash` varchar(255) NOT NULL,
+  `UserType` enum('buyer','seller') NOT NULL,
+  `CreateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Balance` decimal(10,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`UserID`),
+  UNIQUE KEY `Email` (`Email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `orders`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `orders` WRITE;
-/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,9,16,'2024-05-23 11:33:27',250.00,'pending'),(2,10,17,'2024-05-23 11:33:27',200.00,'pending'),(3,11,18,'2024-05-23 11:33:27',90.00,'pending'),(4,12,19,'2024-05-23 11:33:27',80.00,'pending');
-/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'buyer1','buyer1@example.com','hash1','buyer','2024-06-05 17:09:16',100.00),(2,'buyer2','buyer2@example.com','hash2','buyer','2024-06-05 17:09:16',200.00),(3,'seller1','seller1@example.com','hash3','seller','2024-06-05 17:09:16',300.00),(4,'buyer3','Buyer3@lwkmdw.ru','hash3','seller','2024-06-05 18:32:56',0.00),(5,'buyer3','buyer3@example.com','hash4','buyer','2024-06-05 19:00:10',150.00),(6,'seller2','seller2@example.com','hash5','seller','2024-06-05 19:00:10',350.00),(7,'Buyer6','Buyer6@email.ru','hash6','buyer','2024-06-05 19:07:59',200.00);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-23 13:08:21
+-- Dump completed on 2024-06-05 19:55:50

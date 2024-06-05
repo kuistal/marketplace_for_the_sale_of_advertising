@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: marketplace_for_the_sale_of_advertising
+-- Host: localhost    Database: marketplace_for_the_sale_of_advertising_v2
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,29 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `rbac_permissions`
+-- Table structure for table `transactions`
 --
 
-DROP TABLE IF EXISTS `rbac_permissions`;
+DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rbac_permissions` (
-  `PermissionID` int NOT NULL AUTO_INCREMENT,
-  `PermissionName` varchar(100) NOT NULL,
-  `Description` text,
-  PRIMARY KEY (`PermissionID`),
-  UNIQUE KEY `PermissionName` (`PermissionName`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `transactions` (
+  `TransactionID` int NOT NULL AUTO_INCREMENT,
+  `OrderID` int DEFAULT NULL,
+  `TransactionDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Amount` decimal(10,2) NOT NULL,
+  `Type` enum('debit','credit') NOT NULL,
+  PRIMARY KEY (`TransactionID`),
+  KEY `OrderID` (`OrderID`),
+  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rbac_permissions`
+-- Dumping data for table `transactions`
 --
 
-LOCK TABLES `rbac_permissions` WRITE;
-/*!40000 ALTER TABLE `rbac_permissions` DISABLE KEYS */;
-INSERT INTO `rbac_permissions` VALUES (1,'create_ad','Create advertising space'),(2,'edit_ad','Edit advertising space'),(3,'delete_ad','Delete advertising space'),(4,'view_ad','View advertising space'),(5,'place_order','Place an order'),(6,'view_order','View order'),(7,'manage_users','Manage other users'),(8,'review_ad','Review advertising space'),(9,'process_transactions','Process financial transactions');
-/*!40000 ALTER TABLE `rbac_permissions` ENABLE KEYS */;
+LOCK TABLES `transactions` WRITE;
+/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+INSERT INTO `transactions` VALUES (1,1,'2024-06-05 17:19:25',50.00,'debit'),(2,2,'2024-06-05 17:19:25',50.00,'debit'),(3,7,'2024-06-05 17:22:13',50.00,'debit'),(4,8,'2024-06-05 17:23:37',100.00,'debit'),(5,9,'2024-06-05 17:26:01',50.00,'debit'),(6,10,'2024-06-05 17:26:33',52.00,'debit'),(7,11,'2024-06-05 17:26:36',52.00,'debit'),(8,12,'2024-06-05 17:31:24',25.00,'debit');
+/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-23 13:08:21
+-- Dump completed on 2024-06-05 19:55:50
