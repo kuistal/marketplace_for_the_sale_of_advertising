@@ -32,7 +32,7 @@ CREATE TABLE `users` (
   `Balance` decimal(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `Email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'buyer1','buyer1@example.com','hash1','buyer','2024-06-05 17:09:16',100.00),(2,'buyer2','buyer2@example.com','hash2','buyer','2024-06-05 17:09:16',200.00),(3,'seller1','seller1@example.com','hash3','seller','2024-06-05 17:09:16',300.00),(4,'buyer3','Buyer3@lwkmdw.ru','hash3','seller','2024-06-05 18:32:56',0.00),(5,'buyer3','buyer3@example.com','hash4','buyer','2024-06-05 19:00:10',150.00),(6,'seller2','seller2@example.com','hash5','seller','2024-06-05 19:00:10',350.00),(7,'Buyer6','Buyer6@email.ru','hash6','buyer','2024-06-05 19:07:59',200.00);
+INSERT INTO `users` VALUES (1,'buyer1','buyer1@example.com','hash1','buyer','2024-06-05 17:09:16',100.00),(2,'buyer2','buyer2@example.com','hash2','buyer','2024-06-05 17:09:16',200.00),(3,'seller1','seller1@example.com','hash3','seller','2024-06-05 17:09:16',300.00),(4,'buyer3','Buyer3@lwkmdw.ru','hash3','seller','2024-06-05 18:32:56',0.00),(5,'buyer3','buyer3@example.com','hash4','buyer','2024-06-05 19:00:10',150.00),(6,'seller2','seller2@example.com','hash5','seller','2024-06-05 19:00:10',350.00),(7,'Buyer6','Buyer6@email.ru','hash6','buyer','2024-06-05 19:07:59',200.00),(8,'seller3','seller3@mail.ru','42dfdc43286935904c9554be0fa5706c736c3ad95b0a44a547ee4fd0b11fe618','seller','2024-06-06 12:11:42',325.00);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-05 19:55:50
+-- Dump completed on 2024-06-06 12:12:38

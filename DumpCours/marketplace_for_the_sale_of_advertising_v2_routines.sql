@@ -145,7 +145,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateUser`(
     IN p_Username VARCHAR(255),
     IN p_Email VARCHAR(255),
-    IN p_PasswordHash VARCHAR(255),
+    IN p_Password VARCHAR(255),
     IN p_UserType ENUM('buyer', 'seller'),
     IN p_Balance DECIMAL(10, 2)
 )
@@ -156,9 +156,9 @@ BEGIN
     IF EXISTS (SELECT 1 FROM Users WHERE Email = p_Email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already exists';
     ELSE
-        -- Вставка нового пользователя
+        -- Вставка нового пользователя с хешированным паролем
         INSERT INTO Users (Username, Email, PasswordHash, UserType, Balance, CreateDate)
-        VALUES (p_Username, p_Email, p_PasswordHash, p_UserType, p_Balance, NOW());
+        VALUES (p_Username, p_Email, SHA2(p_Password, 256), p_UserType, p_Balance, NOW());
 
         -- Получение ID созданного пользователя
         SET v_UserID = LAST_INSERT_ID();
@@ -182,4 +182,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-05 19:55:50
+-- Dump completed on 2024-06-06 12:12:38
